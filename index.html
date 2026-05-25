@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <title>🍼 Hora da Mamada</title>
+  <meta name="theme-color" content="#C4704A" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="Mamada" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="icon-192.png" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+  <script>
+    window.OneSignalDeferred = window.OneSignalDeferred || [];
+    OneSignalDeferred.push(async function(OneSignal) {
+      await OneSignal.init({
+        appId: "f1b95b2f-e4f6-4310-9e68-ab3e9dd18f94",
+        safari_web_id: "web.onesignal.auto.081d2360-74df-41b0-afe2-959ef72fcc8c",
+        notifyButton: { enable: false },
+        allowLocalhostAsSecureOrigin: true,
+      });
+    });
+  </script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { --cream: #FFF8F2; --warm: #F2E4D8; --border: #E2C8B4; --text: #2D1B0E; --muted: #9A6040; --accent: #C4704A; --accent-dark: #9A4A28; --danger: #E05A3A; --ring-bg: #EDD5C0; }
+    html, body { height: 100%; background: var(--cream); color: var(--text); font-family: 'DM Sans', sans-serif; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+    body { display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 0 0 48px; }
+    .topbar { width: 100%; padding: 18px 24px 12px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); background: var(--cream); position: sticky; top: 0; z-index: 10; }
+    .topbar h1 { font-family: 'DM Serif Display', serif; font-size: 20px; font-weight: normal; color: var(--accent-dark); }
+    .topbar .subtitle { font-size: 10px; color: var(--muted); letter-spacing: 0.12em; text-transform: uppercase; margin-top: 2px; }
+    .live-dot { width: 8px; height: 8px; background: #4CAF50; border-radius: 50%; animation: pulse-dot 2s ease-in-out infinite; }
+    @keyframes pulse-dot { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(0.7); } }
+    .main { width: 100%; max-width: 400px; display: flex; flex-direction: column; align-items: center; padding: 28px 20px 0; gap: 20px; }
+    .ring-wrap { position: relative; width: 230px; height: 230px; }
+    .ring-wrap svg { transform: rotate(-90deg); }
+    .ring-center { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; }
+    .ring-label { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+    .ring-countdown { font-family: 'DM Serif Display', serif; font-size: 48px; line-height: 1; color: var(--text); }
+    .ring-countdown.overdue { color: var(--danger); animation: blink 1s step-start infinite; }
+    .ring-next { font-size: 15px; color: var(--accent); margin-top: 6px; font-weight: 500; }
+    .ring-empty { font-size: 13px; color: var(--muted); line-height: 1.5; padding: 0 10px; }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
+    .last-feed { background: var(--warm); border: 1px solid var(--border); border-radius: 14px; padding: 12px 20px; text-align: center; width: 100%; font-size: 13px; color: var(--muted); }
+    .last-feed strong { color: var(--accent-dark); }
+    .interval-section { width: 100%; }
+    .interval-label { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; text-align: center; }
+    .pills { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; }
+    .pill { padding: 8px 16px; border-radius: 50px; border: 2px solid var(--border); background: white; color: var(--muted); font-size: 13px; font-family: 'DM Sans', sans-serif; font-weight: 500; cursor: pointer; transition: all 0.18s; -webkit-tap-highlight-color: transparent; }
+    .pill.active { border-color: var(--accent); background: var(--accent); color: white; }
+    .feed-btn { width: 180px; height: 180px; border-radius: 50%; border: none; background: radial-gradient(circle at 40% 35%, #E08050, #B05028); color: white; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; cursor: pointer; box-shadow: 0 8px 32px rgba(176,80,40,0.4); transition: transform 0.12s; -webkit-tap-highlight-color: transparent; font-family: 'DM Sans', sans-serif; }
+    .feed-btn:active { transform: scale(0.93); }
+    .feed-btn .btn-emoji { font-size: 44px; }
+    .feed-btn .btn-text { font-size: 14px; font-weight: 600; letter-spacing: 0.08em; }
+    .feed-btn .btn-sub { font-size: 11px; opacity: 0.75; }
+    .history-section { width: 100%; }
+    .history-label { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; text-align: center; }
+    .history-list { display: flex; flex-direction: column; gap: 6px; }
+    .history-item { background: var(--warm); border: 1px solid var(--border); border-radius: 10px; padding: 10px 16px; display: flex; justify-content: space-between; align-items: center; font-size: 13px; }
+    .history-item .hi-time { font-weight: 600; color: var(--accent-dark); }
+    .history-item .hi-interval { color: var(--muted); font-size: 12px; }
+    .notif-banner { width: calc(100% - 40px); background: #FFF3CD; border: 1px solid #FBBF24; border-radius: 12px; padding: 12px 16px; font-size: 12px; color: #7B5800; text-align: center; }
+    .notif-banner button { background: #F59E0B; color: white; border: none; border-radius: 6px; padding: 5px 12px; font-size: 12px; cursor: pointer; margin-top: 6px; font-family: 'DM Sans', sans-serif; }
+    .toast { position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%) translateY(80px); background: #2D1B0E; color: white; padding: 12px 24px; border-radius: 50px; font-size: 13px; font-family: 'DM Sans', sans-serif; transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1); z-index: 100; white-space: nowrap; }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+    .spinner { width: 32px; height: 32px; border: 3px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 60px auto; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+<div class="topbar">
+  <div><h1>🍼 Hora da Mamada</h1><div class="subtitle">Partilhado em tempo real</div></div>
+  <div class="live-dot"></div>
+</div>
+<div class="main" id="app"><div class="spinner"></div></div>
+<div class="toast" id="toast"></div>
+<script>
+const SUPABASE_URL='https://sjbmjhtsnwhpahaokgba.supabase.co';
+const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNqYm1qaHRzbndocGFoYW9rZ2JhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk2NDc3NTAsImV4cCI6MjA5NTIyMzc1MH0.scqbjjinbe9LnsYO-3bjRJygIYD6ohWBszYKrREt6Tg';
+const ONESIGNAL_APP_ID='f1b95b2f-e4f6-4310-9e68-ab3e9dd18f94';
+const INTERVALS=[2,2.5,3,3.5,4];
+let selectedInterval=3,latestFeed=null,history=[];
+
+async function apiFetch(path,opts={}){
+  const res=await fetch(`${SUPABASE_URL}/rest/v1/${path}`,{headers:{'apikey':SUPABASE_KEY,'Authorization':`Bearer ${SUPABASE_KEY}`,'Content-Type':'application/json','Prefer':opts.prefer||'return=representation',...opts.headers},...opts});
+  if(!res.ok)throw new Error(await res.text());
+  const text=await res.text();return text?JSON.parse(text):null;
+}
+async function getLatestFeed(){return await apiFetch('feeds?order=created_at.desc&limit=5')||[];}
+async function insertFeed(ft,nt,ih){return apiFetch('feeds',{method:'POST',prefer:'return=representation',body:JSON.stringify({feed_time:ft,next_time:nt,interval_hours:ih})});}
+
+async function requestNotifPermission(){
+  if(window.OneSignal){await window.OneSignal.Notifications.requestPermission();renderApp();}
+}
+function isNotifGranted(){return window.OneSignal&&window.OneSignal.Notifications.permission;}
+
+async function scheduleNotif(nextTime){
+  try{
+    await fetch('https://onesignal.com/api/v1/notifications',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        app_id:ONESIGNAL_APP_ID,
+        included_segments:['All'],
+        contents:{pt:'🍼 Está na hora de dar de mamar ao bebé!',en:'🍼 Time to feed the baby!'},
+        headings:{pt:'Hora da Mamada',en:'Feeding Time'},
+        send_after:new Date(nextTime).toISOString(),
+      })
+    });
+  }catch(e){console.error('OneSignal error:',e);}
+}
+
+function pad(n){return String(Math.floor(Math.abs(n))).padStart(2,'0');}
+function fmtTime(d){return `${pad(d.getHours())}:${pad(d.getMinutes())}`;}
+function fmtCountdown(ms){
+  if(ms<=0)return null;
+  const s=Math.floor(ms/1000),h=Math.floor(s/3600),m=Math.floor((s%3600)/60),sec=s%60;
+  return h>0?`${pad(h)}:${pad(m)}:${pad(sec)}`:`${pad(m)}:${pad(sec)}`;
+}
+function timeAgo(d){
+  const m=Math.floor((Date.now()-new Date(d))/60000);
+  if(m<1)return'agora mesmo';if(m<60)return`há ${m} min`;
+  const h=Math.floor(m/60);return`há ${h}h${m%60>0?pad(m%60)+'min':''}`;
+}
+
+function renderApp(){
+  const app=document.getElementById('app'),feed=latestFeed,now=Date.now();
+  const notifGranted=isNotifGranted();
+  let ringHTML='',lastFeedHTML='';
+  if(feed){
+    const feedTime=new Date(feed.feed_time).getTime(),nextTime=new Date(feed.next_time).getTime();
+    const msUntilNext=nextTime-now,isOverdue=msUntilNext<=0;
+    const progress=Math.min(1,Math.max(0,(now-feedTime)/(nextTime-feedTime)));
+    const circumference=2*Math.PI*95,dashOffset=circumference*(1-progress);
+    const cd=fmtCountdown(msUntilNext);
+    ringHTML=`<div class="ring-wrap"><svg width="230" height="230" viewBox="0 0 230 230"><circle cx="115" cy="115" r="95" fill="none" stroke="var(--ring-bg)" stroke-width="11"/><circle cx="115" cy="115" r="95" fill="none" stroke="${isOverdue?'var(--danger)':'var(--accent)'}" stroke-width="11" stroke-linecap="round" stroke-dasharray="${circumference}" stroke-dashoffset="${dashOffset}" style="transition:stroke-dashoffset 1s linear"/></svg><div class="ring-center"><div class="ring-label">${isOverdue?'ESTÁ NA HORA!':'PRÓXIMA EM'}</div><div class="ring-countdown${isOverdue?' overdue':''}">${isOverdue?'🍼':cd}</div><div class="ring-next">${fmtTime(new Date(feed.next_time))}</div></div></div>`;
+    lastFeedHTML=`<div class="last-feed">Última mamada às <strong>${fmtTime(new Date(feed.feed_time))}</strong> · ${timeAgo(feed.feed_time)} · intervalo ${feed.interval_hours}h</div>`;
+  }else{
+    ringHTML=`<div class="ring-wrap"><svg width="230" height="230" viewBox="0 0 230 230"><circle cx="115" cy="115" r="95" fill="none" stroke="var(--ring-bg)" stroke-width="11"/></svg><div class="ring-center"><div class="ring-empty">Regista a primeira<br/>mamada abaixo 👇</div></div></div>`;
+  }
+  const pillsHTML=INTERVALS.map(h=>`<button class="pill${selectedInterval===h?' active':''}" onclick="selectInterval(${h})">${h}h</button>`).join('');
+  const histHTML=history.length>1?`<div class="history-section"><div class="history-label">Histórico recente</div><div class="history-list">${history.slice(1,4).map(f=>`<div class="history-item"><span class="hi-time">${fmtTime(new Date(f.feed_time))}</span><span class="hi-interval">${timeAgo(f.feed_time)} · ${f.interval_hours}h</span></div>`).join('')}</div></div>`:'';
+  const notifBanner=!notifGranted?`<div class="notif-banner">Ativa as notificações para receber alertas quando for hora de mamar!<br/><button onclick="requestNotifPermission()">🔔 Ativar Notificações</button></div>`:'';
+  app.innerHTML=`${notifBanner}${ringHTML}${lastFeedHTML}<div class="interval-section"><div class="interval-label">Intervalo para a próxima</div><div class="pills">${pillsHTML}</div></div><button class="feed-btn" onclick="recordFeed()"><span class="btn-emoji">🍼</span><span class="btn-text">DEI DE MAMAR</span><span class="btn-sub">Toca aqui agora</span></button>${histHTML}`;
+}
+
+function selectInterval(h){selectedInterval=h;renderApp();}
+
+async function recordFeed(){
+  const now=new Date(),next=new Date(now.getTime()+selectedInterval*3600*1000);
+  try{
+    await insertFeed(now.toISOString(),next.toISOString(),selectedInterval);
+    await loadData();
+    showToast(`✅ Registado! Próxima às ${fmtTime(next)}`);
+    await scheduleNotif(next.toISOString());
+  }catch(e){showToast('❌ Erro ao guardar.');console.error(e);}
+}
+
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
+
+async function loadData(){
+  try{const rows=await getLatestFeed();history=rows;latestFeed=rows[0]||null;renderApp();}
+  catch(e){console.error(e);}
+}
+
+if('serviceWorker'in navigator)navigator.serviceWorker.register('sw.js').catch(console.error);
+loadData().then(()=>{setInterval(renderApp,1000);setInterval(loadData,10000);});
+</script>
+</body>
+</html>
